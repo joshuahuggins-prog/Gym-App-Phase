@@ -47,9 +47,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
+  <HashRouter>
+  <div style={{ padding: 16, fontFamily: "monospace" }}>
+    App booted OK (App component not mounted)
+  </div>
+</HashRouter>
   </React.StrictMode>
 );
 
