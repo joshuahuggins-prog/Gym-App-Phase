@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { HashRouter } from "react-router-dom";
+
 import "./index.css";
 import App from "./App";
+import { initStorage } from "./utils/storage";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-export const initStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_VERSION_KEY);
-    const version = stored ? parseInt(stored, 10) : 0;
-
+// Optional: show runtime errors on-screen (temporary for debugging)
+// Remove these listeners once the app loads normally.
 window.addEventListener("error", (e) => {
   document.body.innerHTML =
     `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
@@ -22,16 +23,18 @@ window.addEventListener("unhandledrejection", (e) => {
     `</pre>`;
 });
 
-
-// PWA service worker
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+// Initialize local storage
+initStorage();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
-    <App />
+    <HashRouter>
+      <App />
+    </HashRouter>
   </React.StrictMode>
 );
 
-// Register service worker (offline + installable)
+// Disable service worker while debugging/deploying
 serviceWorkerRegistration.unregister();
