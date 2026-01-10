@@ -1,3 +1,17 @@
+window.addEventListener("error", (e) => {
+  document.body.innerHTML =
+    `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
+    `JS Error:\n${e.message}\n\n${e.filename}:${e.lineno}:${e.colno}` +
+    `</pre>`;
+});
+
+window.addEventListener("unhandledrejection", (e) => {
+  document.body.innerHTML =
+    `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
+    `Promise Rejection:\n${String(e.reason)}` +
+    `</pre>`;
+});
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
