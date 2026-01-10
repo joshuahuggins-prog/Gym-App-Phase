@@ -17,9 +17,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-import { initStorage } from "./utils/storage";
+export const initStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_VERSION_KEY);
+    const version = stored ? parseInt(stored, 10) : 0;
 
-initStorage();
 
 // PWA service worker
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
