@@ -37,4 +37,4 @@ root.render(
 );
 
 // Disable service worker while debugging/deploying
-serviceWorkerRegistration.unregister();
+serviceWorkerRegistration.register();
