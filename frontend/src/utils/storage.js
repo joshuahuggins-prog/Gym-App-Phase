@@ -91,11 +91,16 @@ const LEGACY_EXERCISES = [
 ];
 
 // =====================
-// Low-level storage
+// Low-level storage (namespaced per app)
 // =====================
+
+const APP_STORAGE_PREFIX = "gym_app_phase__";
+
+const withPrefix = (key) => `${APP_STORAGE_PREFIX}${key}`;
+
 export const getStorageData = (key) => {
   try {
-    const raw = localStorage.getItem(key);
+    const raw = localStorage.getItem(withPrefix(key));
     return raw ? JSON.parse(raw) : null;
   } catch (e) {
     console.error(`Failed to read ${key}`, e);
@@ -105,12 +110,29 @@ export const getStorageData = (key) => {
 
 export const setStorageData = (key, value) => {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(withPrefix(key), JSON.stringify(value));
     return true;
   } catch (e) {
     console.error(`Failed to write ${key}`, e);
     return false;
   }
+};
+
+export const removeStorageData = (key) => {
+  try {
+    localStorage.removeItem(withPrefix(key));
+    return true;
+  } catch (e) {
+    console.error(`Failed to remove ${key}`, e);
+    return false;
+  }
+};
+
+// Optional: wipe ONLY this app's data
+export const resetAppStorage = () => {
+  Object.keys(localStorage)
+    .filter((k) => k.startsWith(APP_STORAGE_PREFIX))
+    .forEach((k) => localStorage.removeItem(k));
 };
 
 // =====================
