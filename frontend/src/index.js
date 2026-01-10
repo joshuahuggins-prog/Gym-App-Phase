@@ -7,6 +7,11 @@ import App from "./App";
 import { initStorage } from "./utils/storage";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
+// later...
+if (typeof serviceWorkerRegistration.register === "function") {
+  serviceWorkerRegistration.register();
+}
+
 // Optional: show runtime errors on-screen (temporary for debugging)
 // Remove these listeners once the app loads normally.
 window.addEventListener("error", (e) => {
