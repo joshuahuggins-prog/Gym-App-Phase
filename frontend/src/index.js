@@ -12,20 +12,32 @@ if (typeof serviceWorkerRegistration.register === "function") {
   serviceWorkerRegistration.register();
 }
 
-// Optional: show runtime errors on-screen (temporary for debugging)
-// Remove these listeners once the app loads normally.
+const show = (title, details) => {
+  document.body.innerHTML = `
+    <pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">
+${title}
+
+${details}
+    </pre>
+  `;
+};
+
 window.addEventListener("error", (e) => {
-  document.body.innerHTML =
-    `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
-    `JS Error:\n${e.message}\n\n${e.filename}:${e.lineno}:${e.colno}` +
-    `</pre>`;
+  const stack = e?.error?.stack ? `\n\nSTACK:\n${e.error.stack}` : "";
+  show(
+    "JS Error:",
+    `${e.message}\n\n${e.filename}:${e.lineno}:${e.colno}${stack}`
+  );
 });
 
 window.addEventListener("unhandledrejection", (e) => {
-  document.body.innerHTML =
-    `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
-    `Promise Rejection:\n${String(e.reason)}` +
-    `</pre>`;
+  const reason = e?.reason;
+  const msg =
+    typeof reason === "object"
+      ? JSON.stringify(reason, null, 2)
+      : String(reason);
+  const stack = reason?.stack ? `\n\nSTACK:\n${reason.stack}` : "";
+  show("Promise Rejection:", `${msg}${stack}`);
 });
 
 // Initialize local storage
