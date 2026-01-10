@@ -21,6 +21,7 @@ export const STORAGE_KEYS = {
   PROGRESSION_SETTINGS: "gym_progression_settings",
   WORKOUT_PATTERN: "gym_workout_pattern",
   WORKOUT_PATTERN_INDEX: "gym_workout_pattern_index",
+  ACTIVE_PHASE: "gym_active_phase",
 };
 
 // =====================
@@ -152,6 +153,12 @@ export const initStorage = () => {
       setStorageData(STORAGE_KEYS.EXERCISES, rebuilt);
     }
 
+    // Ensure a default phase exists
+    const phase = getStorageData(STORAGE_KEYS.ACTIVE_PHASE);
+    if (![1, 2, 3].includes(Number(phase))) {
+      setStorageData(STORAGE_KEYS.ACTIVE_PHASE, 1);
+    }
+
     localStorage.setItem(STORAGE_VERSION_KEY, STORAGE_VERSION.toString());
   } catch (e) {
     console.error("Storage init failed", e);
@@ -159,10 +166,28 @@ export const initStorage = () => {
 };
 
 // =====================
+// Phase helpers
+// =====================
+export const getActivePhase = () => {
+  const raw = getStorageData(STORAGE_KEYS.ACTIVE_PHASE);
+  const n = Number(raw);
+  return [1, 2, 3].includes(n) ? n : 1;
+};
+
+export const setActivePhase = (phase) => {
+  const n = Number(phase);
+  if (![1, 2, 3].includes(n)) return false;
+  return setStorageData(STORAGE_KEYS.ACTIVE_PHASE, n);
+};
+
+// =====================
 // Workout Pattern Helpers
 // =====================
 export const getWorkoutPattern = () => {
-  return getStorageData(STORAGE_KEYS.WORKOUT_PATTERN) || "A,B";
+  const stored = getStorageData(STORAGE_KEYS.WORKOUT_PATTERN);
+  if (stored) return stored;
+  const p = getActivePhase();
+  return `A${p},B${p}`;
 };
 
 export const setWorkoutPattern = (patternString) => {
@@ -379,8 +404,8 @@ export const getProgrammes = () => {
   const programmes = getStorageData(STORAGE_KEYS.PROGRAMMES);
   if (Array.isArray(programmes) && programmes.length > 0) return programmes;
 
-  const { WORKOUT_A, WORKOUT_B } = require("../data/workoutData");
-  const defaults = [WORKOUT_A, WORKOUT_B];
+  const { createDefaultPhasedProgrammes } = require("../data/workoutData");
+  const defaults = createDefaultPhasedProgrammes();
   setStorageData(STORAGE_KEYS.PROGRAMMES, defaults);
   return defaults;
 };
@@ -411,11 +436,8 @@ export const deleteProgramme = (type) => {
 // =====================
 function getDefaultExercisesFromWorkoutData() {
   try {
-    const { WORKOUT_A, WORKOUT_B } = require("../data/workoutData");
-    return [
-      ...(WORKOUT_A?.exercises || []),
-      ...(WORKOUT_B?.exercises || []),
-    ];
+    const { createDefaultPhasedProgrammes } = require("../data/workoutData");
+    return (createDefaultPhasedProgrammes() || []).flatMap((p) => p?.exercises || []);
   } catch {
     return [];
   }
