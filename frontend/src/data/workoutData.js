@@ -115,6 +115,37 @@ export const WORKOUT_B = {
   ]
 };
 
+// =====================
+// Phased variants (A1/B1, A2/B2, A3/B3)
+//
+// The Phase app keeps multiple versions of Workout A/B.
+// For now, each phase defaults to a clone of the base A/B workouts.
+// You can later edit A2/B2 etc. in the Programmes page.
+// =====================
+
+const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+
+const makeVariant = (baseWorkout, phaseNumber) => {
+  const phase = Number(phaseNumber);
+  const v = deepClone(baseWorkout);
+  const baseType = String(baseWorkout?.type || "").toUpperCase();
+
+  v.phase = phase;
+  v.baseType = baseType;
+  v.type = `${baseType}${phase}`; // e.g. A1
+  v.name = `${baseWorkout?.name || `Workout ${baseType}`} (Phase ${phase})`;
+
+  return v;
+};
+
+export const getDefaultPhasedProgrammes = () => {
+  const phases = [1, 2, 3];
+  return [
+    ...phases.map((p) => makeVariant(WORKOUT_A, p)),
+    ...phases.map((p) => makeVariant(WORKOUT_B, p)),
+  ];
+};
+
 // Exercise alternatives
 export const EXERCISE_ALTERNATIVES = {
   weighted_dips: ['Decline Bench Press', 'Close-Grip Bench Press', 'Chest Dips (Bodyweight)'],
