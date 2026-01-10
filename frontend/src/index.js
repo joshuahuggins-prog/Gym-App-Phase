@@ -34,4 +34,4 @@ root.render(
 );
 
 // Register service worker (offline + installable)
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.unregister();
