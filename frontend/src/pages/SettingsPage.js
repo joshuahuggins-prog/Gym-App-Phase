@@ -26,7 +26,6 @@ import {
 } from "../utils/storage";
 
 // ✅ App version display (CRA/CRACO supports importing package.json)
-import pkg from "../../package.json";
 
 const numberOrFallback = (value, fallback) => {
   const n = Number(value);
@@ -108,9 +107,9 @@ const SettingsPage = () => {
 
         {/* ✅ Version */}
         <div className="text-xs text-muted-foreground">
-          Version {pkg?.version || "unknown"}
-        </div>
-      </div>
+  Gym App Phase
+     </div>
+</div>
 
       {/* ===== Units ===== */}
       <section className="space-y-2">
