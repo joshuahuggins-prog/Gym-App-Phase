@@ -37,7 +37,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      # IMPORTANT: set this to your build output folder
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
