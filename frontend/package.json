@@ -1,13 +1,4 @@
-{
-  {
-  "homepage": "https://joshuahuggins-prog.github.io/Gym-App-Phase",
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-  }
-}
-
-  "name": "frontend",
+ "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
