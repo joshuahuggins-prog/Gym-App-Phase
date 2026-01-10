@@ -1,3 +1,13 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+export const initStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_VERSION_KEY);
+    const version = stored ? parseInt(stored, 10) : 0;
+
 window.addEventListener("error", (e) => {
   document.body.innerHTML =
     `<pre style="padding:12px;white-space:pre-wrap;font-family:monospace;">` +
@@ -11,16 +21,6 @@ window.addEventListener("unhandledrejection", (e) => {
     `Promise Rejection:\n${String(e.reason)}` +
     `</pre>`;
 });
-
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-
-export const initStorage = () => {
-  try {
-    const stored = localStorage.getItem(STORAGE_VERSION_KEY);
-    const version = stored ? parseInt(stored, 10) : 0;
 
 
 // PWA service worker
