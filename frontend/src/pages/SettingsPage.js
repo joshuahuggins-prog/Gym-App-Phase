@@ -11,13 +11,6 @@ import {
 
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
 import { useSettings } from "../contexts/SettingsContext";
 import { toast } from "sonner";
 
@@ -29,8 +22,6 @@ import {
   parseWorkoutPattern,
   getUsableProgrammes,
   setWorkoutPatternIndex,
-  getActivePhase,
-  setActivePhase,
   resetWithBackup,
 } from "../utils/storage";
 
@@ -47,7 +38,6 @@ const SettingsPage = () => {
 
   const [progressionSettings, setProgressionSettings] = useState(null);
   const [workoutPattern, setWorkoutPatternState] = useState("");
-  const [phase, setPhase] = useState(1);
 
   const usableProgrammeTypes = useMemo(() => {
     return getUsableProgrammes().map((p) => String(p.type).toUpperCase());
@@ -56,21 +46,7 @@ const SettingsPage = () => {
   useEffect(() => {
     setProgressionSettings(getProgressionSettings());
     setWorkoutPatternState(getWorkoutPattern());
-    setPhase(getActivePhase());
   }, []);
-
-  const handleApplyPhase = () => {
-    const ok = setActivePhase(phase);
-    if (!ok) {
-      toast.error("Phase must be 1, 2 or 3");
-      return;
-    }
-    const nextPattern = `A${phase},B${phase}`;
-    setWorkoutPatternState(nextPattern);
-    setWorkoutPattern(nextPattern);
-    setWorkoutPatternIndex(0);
-    toast.success(`Phase ${phase} applied (pattern set to ${nextPattern})`);
-  };
 
   const handleSaveProgression = () => {
     if (!progressionSettings) return;
@@ -92,7 +68,7 @@ const SettingsPage = () => {
   const handleSavePattern = () => {
     const parsed = parseWorkoutPattern(workoutPattern);
     if (parsed.length === 0) {
-      toast.error("Please enter a pattern like A1,B1,A1,B1");
+      toast.error("Please enter a pattern like A,B,A,B");
       return;
     }
 
@@ -191,31 +167,6 @@ const SettingsPage = () => {
         <Button onClick={handleSaveProgression}>Save progression</Button>
       </section>
 
-      {/* ===== Programme Phase ===== */}
-      <section className="space-y-3">
-        <h2 className="font-semibold flex items-center gap-2">
-          <ListOrdered className="h-4 w-4" />
-          Programme phase
-        </h2>
-
-        <div className="text-xs text-muted-foreground">
-          Choose the current phase. This will set your pattern to A{phase},B{phase}.
-        </div>
-
-        <Select value={String(phase)} onValueChange={(v) => setPhase(Number(v))}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select phase" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1">Phase 1</SelectItem>
-            <SelectItem value="2">Phase 2</SelectItem>
-            <SelectItem value="3">Phase 3</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Button onClick={handleApplyPhase}>Apply phase</Button>
-      </section>
-
       {/* ===== Workout Pattern ===== */}
       <section className="space-y-3">
         <h2 className="font-semibold flex items-center gap-2">
@@ -224,13 +175,13 @@ const SettingsPage = () => {
         </h2>
 
         <div className="text-xs text-muted-foreground">
-          Allowed: {usableProgrammeTypes.join(", ")} (e.g. A1,B1,A1,B1)
+          Allowed: {usableProgrammeTypes.join(", ")} (e.g. A,B,A,B)
         </div>
 
         <Input
           value={workoutPattern}
           onChange={(e) => setWorkoutPatternState(e.target.value)}
-          placeholder="e.g. A1,B1,A1,B1"
+          placeholder="e.g. A,B,A,B"
           autoCapitalize="characters"
         />
 
