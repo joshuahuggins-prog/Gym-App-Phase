@@ -38,9 +38,15 @@ const SettingsPage = () => {
   const [progressionSettings, setProgressionSettings] = useState(null);
   const [workoutPattern, setWorkoutPatternState] = useState("");
 
-  const usableProgrammeTypes = useMemo(() => {
-    return getUsableProgrammes().map((p) => String(p.type).toUpperCase());
-  }, []);
+const usableProgrammeTypes = useMemo(() => {
+  if (typeof getUsableProgrammes !== "function") return ["A", "B"];
+  try {
+    const programmes = getUsableProgrammes() || [];
+    return programmes.map((p) => String(p.type).toUpperCase());
+  } catch {
+    return ["A", "B"];
+  }
+}, []);
 
   useEffect(() => {
     setProgressionSettings(getProgressionSettings());
